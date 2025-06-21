@@ -36,5 +36,16 @@ namespace Movies.Api.Mapping
                 Items = movies.Select(m => m.MapToMovieResponse())
             };
         }
+
+        public static Movie MapToMovie(this UpdateMovieRequest request,Guid id)
+        {
+            return new Movie
+            {
+                Id = id,
+                Title = request.Title,
+                YearOfRelease = request.YearOfRelease,
+                Genres = request.Genres.ToList()
+            };
+        }
     }
 }
