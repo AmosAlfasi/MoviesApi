@@ -41,6 +41,11 @@ namespace Movies.Application.Repositories
             var removedCount = _movies.RemoveAll(x => x.Id == id);
             return Task.FromResult(removedCount > 0);
         }
+        public Task<Movie?> GetBySlugAsync(string slug)
+        {
+            var movie = _movies.SingleOrDefault(m => m.Slug == slug);
+            return Task.FromResult(movie);
+        }
 
 
     }
