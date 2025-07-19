@@ -24,8 +24,8 @@ namespace Movies.Api.Controllers
         {
             var movie = request.MapToMovie();
             await _movieRepository.CreateAsync(movie);
-            return CreatedAtAction(nameof(Get), new { id = movie.Id }, movie);
-            // return Created($"/api/movies/{movie.Id}",movie);
+            return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, movie);
+           // return Created($"/api/movies/{movie.Id}",movie);
         }
 
         [HttpGet(ApiEndpoints.Movies.Get)]
