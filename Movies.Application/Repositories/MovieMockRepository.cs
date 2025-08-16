@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Movies.Application.Repositories
 {
-    public class MovieLocalRepository : IMovieRepository
+    public class MovieMockRepository : IMovieRepository
     {
         private readonly List<Movie> _movies = new List<Movie>();
         public Task<bool> CreateAsync(Movie movie)
