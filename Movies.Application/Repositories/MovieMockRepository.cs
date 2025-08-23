@@ -47,6 +47,9 @@ namespace Movies.Application.Repositories
             return Task.FromResult(movie);
         }
 
-
+        public Task<bool> ExistsByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
