@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Movies.Api.Mapping;
 using Movies.Application.Models;
@@ -9,7 +10,7 @@ using Movies.Contracts.Response;
 
 namespace Movies.Api.Controllers
 {
-
+    [Authorize]
     [ApiController]
     public class MoviesController : ControllerBase
     {
