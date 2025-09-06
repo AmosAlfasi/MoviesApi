@@ -10,7 +10,7 @@ using Movies.Contracts.Response;
 
 namespace Movies.Api.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     public class MoviesController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace Movies.Api.Controllers
         {
             _movieService = movieService;
         }
-
+        [Authorize(AuthConstants.TrustMemberPolicyName)]
         [HttpPost(ApiEndpoints.Movies.Create)]
         public async Task<IActionResult> Create([FromBody] CreateMovieRequest request, CancellationToken cancellationToken)
         {
@@ -57,6 +57,7 @@ namespace Movies.Api.Controllers
             var response = movies.MapToMoviesResponse();
             return Ok(response);
         }
+        [Authorize(AuthConstants.TrustMemberPolicyName)]
         [HttpPut(ApiEndpoints.Movies.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMovieRequest request, CancellationToken cancellationToken)
         {
@@ -69,7 +70,7 @@ namespace Movies.Api.Controllers
             var response = updatedMovie.MapToMovieResponse();
             return Ok(response);
         }
-
+        [Authorize(AuthConstants.AdminUserPolicyName)]
         [HttpDelete(ApiEndpoints.Movies.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
