@@ -14,11 +14,13 @@ namespace Movies.Application.Services
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IValidator<Movie> _movieValidator;
+        private readonly IRatingRepository _ratingRepository;
 
-        public MovieService(IMovieRepository movieRepository, IValidator<Movie> movieValidator) 
+        public MovieService(IMovieRepository movieRepository, IValidator<Movie> movieValidator,IRatingRepository ratingRepository) 
         {
             _movieRepository = movieRepository;
             _movieValidator = movieValidator;
+            _ratingRepository = ratingRepository;
         }
         public async Task<bool> CreateAsync(Movie movie, CancellationToken cancellationToken = default)
         {
@@ -61,6 +63,15 @@ namespace Movies.Application.Services
             }
 
             await _movieRepository.UpdateAsync(movie, cancellationToken);
+
+            if (!userId.HasValue)
+            {
+                var rating = _ratingRepository.GetRatingAsync(movie.Id, cancellationToken);
+                return movie;
+            }
+            var ratings =await _ratingRepository.GetRatingAsync(movie.Id,userId.Value, cancellationToken);
+            movie.Rating = ratings.rating;
+            movie.UserRating = ratings.userRating;
             return movie;
         }
     }
