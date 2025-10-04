@@ -11,7 +11,7 @@ using Movies.Contracts.Response;
 
 namespace Movies.Api.Controllers
 {
-    
+
     [ApiController]
     public class MoviesController : ControllerBase
     {
@@ -38,7 +38,7 @@ namespace Movies.Api.Controllers
             var userId = HttpContext.GetUserId();
             var movie = Guid.TryParse(idOrSlug, out var id) ?
                 await _movieService.GetByIdAsync(id, userId, cancellationToken) :
-                await _movieService.GetBySlugAsync(idOrSlug, userId,cancellationToken);
+                await _movieService.GetBySlugAsync(idOrSlug, userId, cancellationToken);
             if (movie is null)
             {
                 return NotFound();
@@ -48,10 +48,11 @@ namespace Movies.Api.Controllers
         }
 
         [HttpGet(ApiEndpoints.Movies.GetAll)]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll([FromQuery] GetAllMoviesRequest request, CancellationToken cancellationToken)
         {
             var userId = HttpContext.GetUserId();
-            var movies = await _movieService.GetAllAsync(userId,cancellationToken);
+            var options = request.MapToOptions().WithUser(userId);
+            var movies = await _movieService.GetAllAsync(options, cancellationToken);
             if (movies is null)
             {
                 return NotFound();
