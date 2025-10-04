@@ -16,6 +16,9 @@ namespace Movies.Application.Repositories
         {
             _dbConnectionFactory = dbConnectionFactory;
         }
+
+      
+
         public async Task<float?> GetRatingAsync(Guid movieId, CancellationToken token = default)
         {
             using var connection = await _dbConnectionFactory.CreateConnectionAsync();
@@ -42,6 +45,28 @@ namespace Movies.Application.Repositories
                     """, new { movieId,userId }, cancellationToken: token));
         }
 
-      
+        public async Task<bool> RateMovieAsync(Guid movieId, int rating, Guid userId, CancellationToken token)
+        {
+            using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+            var result = await connection.ExecuteAsync(new CommandDefinition("""
+                insert into ratings (userid,movieid,rating)
+                values(@userid,@movieId,@rating)
+                on conflict (userid,movieid) do update
+                    set rating = @rating 
+                """,new { userId, movieId, rating },cancellationToken:token));
+
+            return result > 0;
+        }
+        public async Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token)
+        {
+            using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+            var result = await connection.ExecuteAsync(new CommandDefinition("""
+                delete from ratings 
+                where movieid = @movieid
+                and userid = @userid
+                """, new { userId, movieId }, cancellationToken:token));
+
+            return result > 0;
+        }
     }
 }
