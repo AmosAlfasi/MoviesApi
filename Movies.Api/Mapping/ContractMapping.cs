@@ -50,5 +50,14 @@ namespace Movies.Api.Mapping
                 Genres = request.Genres.ToList()
             };
         }
+        public static IEnumerable<MovieRatingResponse> MapToResponse(this IEnumerable<MovieRating> ratings)
+        {
+            return ratings.Select(r => new MovieRatingResponse
+            {
+                Rating = r.Rating,
+                MovieId = r.MovieId,
+                Slug = r.Slug
+            });
+        }
     }
 }
