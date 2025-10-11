@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Auth;
@@ -32,13 +33,26 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddAuthorization(x =>
 {
-    x.AddPolicy(AuthConstants.AdminUserPolicyName, p => p.RequireClaim(AuthConstants.UserTypeClaimName, AuthConstants.AdminUserClaimName));
-    x.AddPolicy(AuthConstants.TrustMemberPolicyName, p => p.RequireAssertion(c => 
-    c.User.HasClaim(m => m is { Type: AuthConstants.UserTypeClaimName, Value: AuthConstants.AdminUserClaimName })
- || c.User.HasClaim(m => m is { Type: AuthConstants.UserTypeClaimName, Value: AuthConstants.TrustedMemberClaimName })));
+    x.AddPolicy(AuthConstants.AdminUserPolicyName, 
+        p => p.RequireClaim(AuthConstants.UserTypeClaimName, AuthConstants.AdminUserClaimName));
+
+    x.AddPolicy(AuthConstants.TrustMemberPolicyName, 
+        p => p.RequireAssertion(c => 
+                c.User.HasClaim(m => m is { Type: AuthConstants.UserTypeClaimName, Value: AuthConstants.AdminUserClaimName })
+             || c.User.HasClaim(m => m is { Type: AuthConstants.UserTypeClaimName, Value: AuthConstants.TrustedMemberClaimName })));
 });
+
+builder.Services.AddApiVersioning(x =>
+{
+    x.DefaultApiVersion = new ApiVersion(1.0);
+    x.AssumeDefaultVersionWhenUnspecified = true;
+    x.ReportApiVersions = true;
+    //x.ApiVersionReader = new HeaderApiVersionReader("api-version");
+    x.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+})
+.AddMvc();
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

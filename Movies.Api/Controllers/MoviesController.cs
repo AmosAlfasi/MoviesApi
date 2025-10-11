@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Movies.Api.Auth;
@@ -8,11 +9,13 @@ using Movies.Application.Repositories;
 using Movies.Application.Services;
 using Movies.Contracts.Requests;
 using Movies.Contracts.Response;
+using System.Runtime.CompilerServices;
 
 namespace Movies.Api.Controllers
 {
 
     [ApiController]
+    [ApiVersion(1.0)]
     public class MoviesController : ControllerBase
     {
         private readonly IMovieService _movieService;
@@ -28,12 +31,12 @@ namespace Movies.Api.Controllers
         {
             var movie = request.MapToMovie();
             await _movieService.CreateAsync(movie, cancellationToken);
-            return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, movie);
+            return CreatedAtAction(nameof(GetV1), new { idOrSlug = movie.Id }, movie);
             // return Created($"/api/movies/{movie.Id}",movie);
         }
 
         [HttpGet(ApiEndpoints.Movies.Get)]
-        public async Task<IActionResult> Get([FromRoute] string idOrSlug, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetV1([FromRoute] string idOrSlug, CancellationToken cancellationToken)
         {
             var userId = HttpContext.GetUserId();
             var movie = Guid.TryParse(idOrSlug, out var id) ?
@@ -54,11 +57,8 @@ namespace Movies.Api.Controllers
             var options = request.MapToOptions().WithUser(userId);
             var movies = await _movieService.GetAllAsync(options, cancellationToken);
             var movieCount = await _movieService.GetCountAsync(options.Title, options.YearOfRelease, cancellationToken);
-            if (movies is null)
-            {
-                return NotFound();
-            }
-            var response = movies.MapToMoviesResponse(request.Page,request.PageSize,movieCount);
+         
+            var response = movies.MapToMoviesResponse(request.Page, request.PageSize, movieCount);
             return Ok(response);
         }
         [Authorize(AuthConstants.TrustMemberPolicyName)]
