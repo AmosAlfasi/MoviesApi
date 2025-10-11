@@ -13,9 +13,9 @@ using System.Runtime.CompilerServices;
 
 namespace Movies.Api.Controllers
 {
-
-    [ApiController]
     [ApiVersion(1.0)]
+    [ApiController]
+    
     public class MoviesController : ControllerBase
     {
         private readonly IMovieService _movieService;
@@ -49,7 +49,7 @@ namespace Movies.Api.Controllers
             var response = movie.MapToMovieResponse();
             return Ok(response);
         }
-
+  
         [HttpGet(ApiEndpoints.Movies.GetAll)]
         public async Task<IActionResult> GetAll([FromQuery] GetAllMoviesRequest request, CancellationToken cancellationToken)
         {
