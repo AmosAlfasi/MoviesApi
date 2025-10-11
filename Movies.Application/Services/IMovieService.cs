@@ -16,5 +16,6 @@ namespace Movies.Application.Services
         Task<Movie?> UpdateAsync(Movie movie, Guid? userId = default, CancellationToken cancellationToken = default);
         Task<bool> DeleteByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<bool> ExistsByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<int> GetCountAsync(string? title, int? yearOfRelease, CancellationToken cancellationToken = default);
     }
 }

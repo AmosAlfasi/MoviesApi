@@ -29,14 +29,18 @@ namespace Movies.Api.Mapping
                 Genres = movie.Genres.ToList(),
                 Rating = movie.Rating,
                 UserRating = movie.UserRating, 
+                
             };
         }
 
-        public static MoviesResponse MapToMoviesResponse(this IEnumerable<Movie> movies)
+        public static MoviesResponse MapToMoviesResponse(this IEnumerable<Movie> movies, int page, int pageSize, int movieCount)
         {
             return new MoviesResponse
             {
-                Items = movies.Select(m => m.MapToMovieResponse())
+                Items = movies.Select(m => m.MapToMovieResponse()),
+                Page = page,
+                PageSize = pageSize,
+                Total = movieCount
             };
         }
 
@@ -68,7 +72,9 @@ namespace Movies.Api.Mapping
                 YearOfRelease = request.Year,
                 SortField = request.SortBy?.Trim('+', '-'),
                 SortOrder = request.SortBy is null ? SortOrder.Unsorted :
-                    request.SortBy.StartsWith('-') ? SortOrder.Descending : SortOrder.Ascending
+                    request.SortBy.StartsWith('-') ? SortOrder.Descending : SortOrder.Ascending,
+                Page = request.Page,
+                PageSize = request.PageSize                
             };
         }
 
