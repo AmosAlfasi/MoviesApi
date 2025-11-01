@@ -29,6 +29,7 @@ namespace Movies.Api.Controllers
             _outputCacheStore = outputCacheStore;
         }
         [Authorize(AuthConstants.TrustMemberPolicyName)]
+        //[ServiceFilter(typeof(ApiKeyAuthFilter))]
         [HttpPost(ApiEndpoints.Movies.Create)]
         [ProducesResponseType(typeof(MovieResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationFailureRespone), StatusCodes.Status400BadRequest)]
