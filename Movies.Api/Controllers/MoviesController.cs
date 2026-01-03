@@ -38,7 +38,8 @@ namespace Movies.Api.Controllers
             var movie = request.MapToMovie();
             await _movieService.CreateAsync(movie, cancellationToken);
             await _outputCacheStore.EvictByTagAsync("movies", cancellationToken);
-            return CreatedAtAction(nameof(GetV1), new { idOrSlug = movie.Id }, movie);
+            var response = movie.MapToMovieResponse();
+            return CreatedAtAction(nameof(GetV1), new { idOrSlug = movie.Id }, response);
             // return Created($"/api/movies/{movie.Id}",movie);
         }
 
@@ -72,7 +73,10 @@ namespace Movies.Api.Controllers
             var movies = await _movieService.GetAllAsync(options, cancellationToken);
             var movieCount = await _movieService.GetCountAsync(options.Title, options.YearOfRelease, cancellationToken);
 
-            var response = movies.MapToMoviesResponse(request.Page, request.PageSize, movieCount);
+            var response = movies.MapToMoviesResponse(
+                    request.Page.GetValueOrDefault(PagedRequest.DefaultPage),
+                    request.PageSize.GetValueOrDefault(PagedRequest.DefaultPageSize),
+                    movieCount);
             return Ok(response);
         }
         [Authorize(AuthConstants.TrustMemberPolicyName)]
