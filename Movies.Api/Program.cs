@@ -76,7 +76,7 @@ builder.Services.AddOutputCache(x =>
         .Tag("movies"));
 });
 
-//builder.Services.AddControllers();
+builder.Services.AddControllers();
 
 builder.Services.AddHealthChecks()
     .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
@@ -115,8 +115,10 @@ app.UseAuthorization();
 app.UseOutputCache();
 
 app.UseMiddleware<ValidationMappingMiddleware>();
-//app.MapControllers();
-app.MapApiEndpoints();
+app.MapControllers();
+
+//for minimal APi
+//app.MapApiEndpoints();
 
 var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
 await dbInitializer.InitializeAsync();
